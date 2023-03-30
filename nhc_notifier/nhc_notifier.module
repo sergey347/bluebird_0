@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @file
+ * NHC Notifier module file - place for various hooks.
+ *
+ * @ingroup custom
+ */
+
+/**
+ * Implements hook_entity_type_build().
+ */
+function nhc_notifier_entity_type_build(array &$entity_types) {
+  if (isset($entity_types['node'])) {
+    $entity_types['node']->setClass('Drupal\nhc_notifier\Entity\NodeExtra');
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function nhc_notifier_theme($existing, $type, $theme, $path) {
+  return [
+    'application_review' => [
+      'path' => "$path/templates",
+      'variables' => [
+        'link' => NULL,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_mail().
+ */
+function nhc_notifier_mail($key, &$message, $params) {
+  if ($key === 'application_node_insert') {
+    $message['from'] = t('National Health Corps');
+    $message['subject'] = t('A candidate has submitted an application in the portal.');
+    $message['body'][] = $params['message'];
+    $message['headers']['Content-Type'] = "text/html; charset=UTF-8; format=flowed";
+  }
+}

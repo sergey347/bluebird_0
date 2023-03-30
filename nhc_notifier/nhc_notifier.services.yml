@@ -1,0 +1,10 @@
+services:
+  nhc_notifier.node_extra.insert:
+    class: Drupal\nhc_notifier\EventSubscriber\NodeExtraEventSubscriber
+    arguments:
+      - '@entity_type.manager'
+      - '@logger.factory'
+      - '@plugin.manager.mail'
+      - '@renderer'
+    tags:
+      - { name: event_subscriber }

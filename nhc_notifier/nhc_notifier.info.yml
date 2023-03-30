@@ -1,0 +1,5 @@
+name: NHC Notifier
+type: module
+description: 'Notifies users by mail on Application node save event.'
+core_version_requirement: ^8.9 || ^9
+package: Custom
