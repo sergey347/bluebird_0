@@ -17,8 +17,7 @@ class NodeExtra extends Node implements NodeExtraInterface {
   public function save() {
     $save_result = parent::save();
 
-    // Remove negate
-    if (!$this->isNew() && $this->bundle() === 'application') {
+    if ($this->isNew() && $this->bundle() === 'application') {
       \Drupal::service('event_dispatcher')->dispatch(
         NodeExtraEvents::NODE_EXTRA_ENTITY_INSERT,
         new NodeExtraEvents($this)
