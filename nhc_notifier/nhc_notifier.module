@@ -24,6 +24,8 @@ function nhc_notifier_theme($existing, $type, $theme, $path) {
     'application_review' => [
       'path' => "$path/templates",
       'variables' => [
+        'title' => NULL,
+        'location' => NULL,
         'link' => NULL,
       ],
     ],
@@ -36,7 +38,7 @@ function nhc_notifier_theme($existing, $type, $theme, $path) {
 function nhc_notifier_mail($key, &$message, $params) {
   if ($key === 'application_node_insert') {
     $message['from'] = t('National Health Corps');
-    $message['subject'] = t('A candidate has submitted an application in the portal.');
+    $message['subject'] = $params['info'];
     $message['body'][] = $params['message'];
     $message['headers']['Content-Type'] = "text/html; charset=UTF-8; format=flowed";
   }

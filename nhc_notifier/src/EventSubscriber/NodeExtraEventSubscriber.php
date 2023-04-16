@@ -84,6 +84,15 @@ class NodeExtraEventSubscriber implements EventSubscriberInterface {
     }
 
     $tid = $field_first_choice->id();
+    $term_name = $field_first_choice->getName();
+    $search_for = ',';
+
+    if (strpos($term_name, $search_for) !== FALSE) {
+      $parts = explode($search_for, $term_name);
+      $term_name = $parts[0];
+    }
+    $params['title'] = $node->getTitle();
+    $params['location'] = $term_name;
 
     $query = $this->etm->getStorage('user')->getQuery();
     $uids = $query->condition('field_first_choice_emails', $tid)
@@ -103,21 +112,27 @@ class NodeExtraEventSubscriber implements EventSubscriberInterface {
         continue;
       }
 
-      $this->sendMail($user_mail, $langcode);
+      $this->sendMail($user_mail, $langcode, $params);
     }
   }
 
   /**
    * Send mail handler.
    */
-  public function sendMail(string $user_mail, string $langcode): void {
+  public function sendMail(string $user_mail, string $langcode, array $info): void {
     $url = Url::fromUri('https://leadershipapplication.nationalhealthcorps.org');
     $link = Link::fromTextAndUrl(t('leadershipapplication.nationalhealthcorps.org'), $url);
 
     $body_data = [
       '#theme' => 'application_review',
+      '#title' => $info['title'],
+      '#location' => $info['location'],
       '#link' => $link->toRenderable(),
     ];
+    $params['info'] = $this->t("%title a candidate for %location has submitted an application in the portal.", [
+      '%title' => $info['title'],
+      '%location' => $info['location'],
+    ]);
     $params['message'] = $this->renderer->render($body_data);
 
     $module = 'nhc_notifier';
